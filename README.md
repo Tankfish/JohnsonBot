@@ -1,113 +1,85 @@
-hubot-heroku
-======================
+LINE BotTemplate: A simple Golang LINE Bot Template for LINE Bot API
+==============
 
-[![npm version](https://badge.fury.io/js/hubot-heroku.svg)](https://github.com/daemonsy/hubot-heroku)
-[![CircleCI Status](https://circleci.com/gh/daemonsy/hubot-heroku.svg?style=shield)](https://github.com/daemonsy/hubot-heroku)
+[![Join the chat at https://gitter.im/kkdai/LineBotTemplate](https://badges.gitter.im/kkdai/LineBotTemplate.svg)](https://gitter.im/kkdai/LineBotTemplate?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A hubot library that exposes heroku commands via Heroku's Platform API, with focus of letting non privileged developers carry out tasks around deployments, but not run dangerous commands or get access to the data.
+ [![GoDoc](https://godoc.org/github.com/kkdai/LineBotTemplate.svg?status.svg)](https://godoc.org/github.com/kkdai/LineBotTemplate)  [![Build Status](https://travis-ci.org/kkdai/LineBotTemplate.svg?branch=master)](https://travis-ci.org/kkdai/LineBotTemplate.svg)
 
-## Background
+[![goreportcard.com](https://goreportcard.com/badge/github.com/kkdai/LineBotTemplate)](https://goreportcard.com/report/github.com/kkdai/LineBotTemplate)
 
-Under Heroku's permission model, giving someone access to push/promote to production means giving full access to the data as well. This is generally not a good practice and for certain companies, it might be non-compliant.
 
-Our [team](http://engineering.alphasights.com) wanted to let every engineer do deployments without giving production access. We started this by using [atmos/hubot-deploy](https://github.com/atmos/hubot-deploy) and [atmos/heaven](https://github.com/atmos/heaven), but that didn't the ability to run migrations, set config variables etc. hubot-heroku was made with this consideration in mind.
+Installation and Usage
+=============
 
-## Considerations
-- It's an opionated helper to get things done on Heroku, not an API client
-- Only use Heroku's Platform API, no direct running of commands in Bash
-- Test coverage for commands, especially if we're implementing
-- Certain commands (such as migrate) only work for Rails now =(
-- Actual deployment is not the focus of this robot
+### 1. Got A LINE Bot API devloper account
 
-By the way, I'm also actively looking for co-contributors!
+[Make sure you already registered](https://business.line.me/zh-hant/services/bot), if you need use LINE Bot.
 
-## What about actual deployments?
-Deployment usually involves some form of CI process. Hence it is best suited for a robust solution like Github deployments, where you can set required CI contexts etc.
+### 2. Just Deploy the same on Heroku
 
-This robot is focused on letting you run auxiliary commands around the heroku system, so developers don't have to be given production access to independently manage deployments.
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-## Auth
-You can restrict command usage to specific roles using the [hubot-auth](https://github.com/hubot-scripts/hubot-auth) package. Role names take the form `heroku-<app>`.
+Remember your heroku, ID.
 
-To enable auth:
+<br><br>
 
-1. `npm install hubot-auth --save`
-2. Add `hubot-auth` to `external-scripts.json` (e.g. `["hubot-auth", "some-other-plugin"]`)
-3. Set `HUBOT_HEROKU_USE_AUTH` to `true`.
-4. Assign roles: `hubot <user> has heroku-<app> role`
+### 3. Go to LINE Bot Dashboard, setup basic API
 
-## Security
-You can set config variables using this. Hence the Heroku API key used should not have access to your hubot instance on Heroku. For example:
+Setup your basic account information. Here is some info you will need to know.
 
-```
-hubot heroku config:set my-hubot HUBOT_ADMIN=dr_evil
-# Muhaha, now I'm to use hubot's other commands to take over the world
-```
+- `Callback URL`: https://{YOUR_HEROKU_SERVER_ID}.herokuapp.com:443/callback
 
-You can also avoid this if you are using auth as described above, in which case you can ensure only admins have the role necessary to set config variables on the hubot instance.
+You will get following info, need fill back to Heroku.
 
-## Installation
-1. `npm install hubot-heroku --save`
-2. Add `hubot-heroku` to `external-scripts.json` (e.g. `["hubot-heroku", "some-other-plugin"]`)
-3. Before deployment, set `HUBOT_HEROKU_API_KEY` to a heroku account's API key. This user must have access to the apps you want to use this script on.
-4. The full list of commands can be obtained using `hubot help`. The commands usually follow hubot heroku <action> <app> <extra info>
+- Channel Secret
+- Channel Access Token
 
-The API key can be obtained here.
+### 4. Back to Heroku again to setup environment variables
 
-![Heroku API Key Illustration](http://cl.ly/image/2l081V1k1d3g/Screenshot_2014-12-09_21_02_42.png)
+- Go to dashboard
+- Go to "Setting"
+- Go to "Config Variables", add following variables:
+	- "ChannelSecret"
+	- "ChannelAccessToken"
 
-## Usage
-Use `hubot help` to look for the commands. They are all prefixed by heroku. (e.g. `hubot heroku restart my-app`)
-Some commands (hubot help will be a better source of truth):
+It all done.	
 
-- `hubot heroku list apps <app name filter>` - Lists all apps or filtered by the name
-- `hubot heroku info <app>` - Returns useful information about the app
-- `hubot heroku dynos <app>` - Lists all dynos and their status
-- `hubot heroku releases <app>` - Latest 10 releases
-- `hubot heroku rollback <app>` <version> - Rollback to a release
-- `hubot heroku restart <app> <dyno>` - Restarts the specified app or dyno/s (e.g. `worker` or `web.2`)
-- `hubot heroku migrate <app>` - Runs migrations. Remember to restart the app =)
-- `hubot heroku config <app>` - Get config keys for the app. Values not given for security
-- `hubot heroku config:set <app> <KEY=value>` - Set KEY to value. Case sensitive and overrides present key
-- `hubot heroku config:unset <app> <KEY>` - Unsets KEY, does not throw error if key is not present
-- `hubot heroku ps:scale <app> <type>=<size>(:<quantity>)` - Scales dyno quantity up or down
 
-For example, `hubot heroku config:set API_KEY=12345`
+### Video Tutorial:
 
-## Troubleshooting
-If you get hubot errors, this might help:
-- 400  - Bad request. Hit me with an issue
-- 401  - Most likely the API key is incorrect or missing
-- 402  - According to Heroku, you need to pay them
-- 403  - You don't have access to that app. Perhaps it's a typo on the app name?
-- 404  - No such API. Hit me with an issue.
-- 405+ - Hit me with an issue
+- [How to deploy LINE BotTemplate](https://www.youtube.com/watch?v=xpP51Kwuy2U)
+- [Hoe to modify your LINE BotTemplate code](https://www.youtube.com/watch?v=ckij73sIRik)
 
-Reference the [API documentation](https://devcenter.heroku.com/articles/platform-api-reference) for more information. Search for "Error Responses".
 
-## Tests
-- Mocha
-- Chai for BDD expect syntax
+### Chinese Tutorial:
 
-Run tests by running `npm test`
+如果你看得懂繁體中文，這裡有[中文的介紹](http://www.evanlin.com/create-your-line-bot-golang/) 
 
-## Debugging
+Inspired By
+=============
 
-### Get Node Inspector working
-```bash
-npm install -g node-inspector
-node-inspector --no-preload --web-port 8123
-```
+- [Golang (heroku) で LINE Bot 作ってみる](http://qiita.com/dongri/items/ba150f04a98e96b160e7)
+- [LINE BOT をとりあえずタダで Heroku で動かす](http://qiita.com/yuya_takeyama/items/0660a59d13e2cd0b2516)
+- [阿美語萌典 BOT](https://github.com/miaoski/amis-linebot)
 
-### Get hubot to run with debugging on
-```bash
-# In your hubot folder
-npm link /path/to/hubot-heroku
-coffee --nodejs --debug node_modules/.bin/hubot
-```
+Project52
+---------------
 
-Visit `http://127.0.0.1:8123/debug?port=5858` and use `debugger` statements to pause execution.
+It is one of my [project 52](https://github.com/kkdai/project52).
 
-## Contributing
 
-PRs and Issues greatly welcomed. Please read [Contributing](https://github.com/daemonsy/hubot-heroku/blob/master/CONTRIBUTING.md) for more information.
+License
+---------------
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
