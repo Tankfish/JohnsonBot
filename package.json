@@ -1,12 +1,12 @@
 {
-  "name": "hubot-deploy",
+  "name": "JohnsonBot",
   "version": "0.13.27",
-  "author": "Corey Donohoe <atmos@atmos.org>",
+  "author": "Luke <luke@luke.com>",
   "description": "hubot script for GitHub Flow",
   "main": "index.coffee",
   "repository": {
     "type": "git",
-    "url": "https://github.com/atmos/hubot-deploy"
+    "url": "https://github.com/Tankfish/JohnsonBot"
   },
   "keywords": [
     "flow",
@@ -16,15 +16,15 @@
     "chatops",
     "deployment"
   ],
-  "homepage": "https://github.com/atmos/hubot-deploy",
+  "homepage": "https://github.com/Tankfish/JohnsonBot",
   "scripts": {
     "test": "NODE_ENV=test mocha test/**/*_test.coffee test/**/**/*_test.coffee test/**/**/**/*_test.coffee",
     "posttest": "NODE_ENV=test coffeelint -f .coffeelint.json src/"
   },
   "contributors": [
     {
-      "name": "Corey Donohoe",
-      "email": "atmos@atmos.org"
+      "name": "Luke",
+      "email": "luke@luke.com"
     }
   ],
   "dependencies": {
@@ -49,7 +49,7 @@
     "node": ">=0.8.0"
   },
   "bugs": {
-    "url": "https://github.com/atmos/hubot-deploy/issues"
+    "url": "https://github.com/Tankfish/JohnsonBot/issues"
   },
   "license": "MIT"
 }
